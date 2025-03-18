@@ -12,10 +12,14 @@ intro="=========== | Services R | ===========
 
 intro_choices() {
     case $1 in
-        "1") ps -A | awk -F ' ' '{ print $1, $4 }' | sed "s/ /\t/g" ; echo;;
-        "2") ./remove_pid.sh;;
+        "1") ps -A | awk -F ' ' '{ print $1, $4 }' | sed "s/ /\t/g" ; echo;
+                read -rsn1 -p "Press any key to return to the menu."; echo; echo;
+                ./menu.sh;;
+
+        "2") echo; ./remove_pid.sh; echo;
+             ./menu.sh;;
         "3") echo; lscpu | grep 'Model name';
-#            echo; free -g | grep "total"; free -g | grep "Swap";
+    #            echo; free -g | grep "total"; free -g | grep "Swap";
         echo; lsmem | grep
         echo; df -h | grep -e 'Filesystem'; df -h | grep -e '/dev/nvme0n1p2' | head -1;
         echo;;
@@ -26,12 +30,12 @@ intro_choices() {
 
 user_choice() {
     local chosen_method=$1
-    read -p "Input: " chosen_input
-    if [ -z $chosen_input ]; then
+    read -r -p "Input: " chosen_input
+    if [ -z "$chosen_input" ]; then
         echo "Input is empty! Please try again."
         user_choice
     else
-        $chosen_method $chosen_input
+        $chosen_method "$chosen_input"
     fi
 }
 
